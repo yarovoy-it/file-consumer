@@ -41,7 +41,6 @@ public class ControllerConsumer {
                 .map((fileModel) -> mapper.map(fileModel, FileTransferModel.class))
                 .collect(Collectors.toList());
         fileService.saveFile(fileDtoList);
-
     }
 
     private <T> List<T> exchangeAsList(String uri, ParameterizedTypeReference<List<T>> responseType) {
