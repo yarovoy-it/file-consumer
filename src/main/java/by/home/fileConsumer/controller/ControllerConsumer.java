@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/download")
 public class ControllerConsumer {
 
     private final FileService fileService;
@@ -33,15 +32,15 @@ public class ControllerConsumer {
         this.restTemplate = restTemplate;
     }
 
-    @RequestMapping("/save")
-    public void getFiles() {
+    @RequestMapping("/")
+    public void catchFiles() {
         List<FileTransferDto> dtoList = this.exchangeAsList(url,
                 new ParameterizedTypeReference<List<FileTransferDto>>() {
                 });
-        final List<FileTransferModel> fileDtoList = dtoList.stream()
+        List<FileTransferModel> fileDtoList = dtoList.stream()
                 .map((fileModel) -> mapper.map(fileModel, FileTransferModel.class))
                 .collect(Collectors.toList());
-        fileService.createWrite(fileDtoList);
+        fileService.saveFile(fileDtoList);
 
     }
 
