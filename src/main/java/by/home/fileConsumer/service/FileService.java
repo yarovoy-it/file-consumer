@@ -30,6 +30,7 @@ public class FileService {
      * @param listFile list of FileTransferModel
      */
     public void saveFile(List<FileTransferModel> listFile) {
+        validate(listFile == null, "file.not.create");
         for (FileTransferModel currentFile : listFile) {
             createWriteFile(currentFile.getName(), currentFile.getBody());
         }
@@ -43,7 +44,7 @@ public class FileService {
      */
     private void createWriteFile(String name, byte[] bFile) {
         validate(pathToDirectory == null, "directory.not.found");
-        validate(name == null, "file.not create");
+        validate(name == null, "file.not.create");
         validate(!Files.isDirectory(Paths.get(pathToDirectory)), "directory.not.found");
         try {
             Path path = Paths.get(pathToDirectory + name);

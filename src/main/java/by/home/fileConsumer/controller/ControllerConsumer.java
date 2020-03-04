@@ -4,12 +4,9 @@ import by.home.fileConsumer.dto.FileTransferDto;
 import by.home.fileConsumer.model.FileTransferModel;
 import by.home.fileConsumer.service.FileService;
 import org.dozer.Mapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,29 +18,22 @@ public class ControllerConsumer {
 
     private final Mapper mapper;
 
-    private final RestTemplate restTemplate;
-
-    @Value("${url.server}")
-    private String url;
-
-    public ControllerConsumer(FileService fileService, Mapper mapper, RestTemplate restTemplate) {
+    public ControllerConsumer(FileService fileService, Mapper mapper) {
         this.fileService = fileService;
         this.mapper = mapper;
-        this.restTemplate = restTemplate;
     }
 
-    @RequestMapping("/")
-    public void catchFiles() {
-        List<FileTransferDto> dtoList = this.exchangeAsList(url,
-                new ParameterizedTypeReference<List<FileTransferDto>>() {
-                });
-        List<FileTransferModel> fileDtoList = dtoList.stream()
+    @RequestMapping(value = "/{ping}", method = RequestMethod.GET)
+    public ResponseEntity<String> ping(@PathVariable String ping) {
+        return new ResponseEntity<>(ping, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.PUT)
+    public void catchFiles(@RequestBody List<FileTransferDto> files) {
+        List<FileTransferModel> fileDtoList = files.stream()
                 .map((fileModel) -> mapper.map(fileModel, FileTransferModel.class))
                 .collect(Collectors.toList());
         fileService.saveFile(fileDtoList);
     }
 
-    private <T> List<T> exchangeAsList(String uri, ParameterizedTypeReference<List<T>> responseType) {
-        return restTemplate.exchange(uri, HttpMethod.GET, null, responseType).getBody();
-    }
 }

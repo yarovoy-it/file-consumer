@@ -14,11 +14,6 @@ public class FileConsumerApplication {
     }
 
     @Bean
-    public RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
-
-    @Bean
     public DozerBeanMapper mapper() {
         return new DozerBeanMapper();
     }
