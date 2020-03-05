@@ -30,10 +30,10 @@ public class ControllerConsumer {
 
     @RequestMapping(value = "/save", method = RequestMethod.PUT)
     public void catchFiles(@RequestBody List<FileTransferDto> files) {
-        List<FileTransferModel> fileDtoList = files.stream()
+        List<FileTransferModel> fileList = files.stream()
                 .map((fileModel) -> mapper.map(fileModel, FileTransferModel.class))
                 .collect(Collectors.toList());
-        fileService.saveFile(fileDtoList);
+        fileService.saveFile(fileList);
     }
 
 }
